@@ -7,10 +7,11 @@
     <version>0.0.1-SNAPSHOT</version>
     <modules>
         <module>common</module>
-        <module>common_utils</module>
+        <module>common/common_utils</module>
         <module>model</module>
         <module>service</module>
-        <module>service_user</module>
+        <module>service/service_hosp</module>
+        <module>service/service_user</module>
     </modules>
     <packaging>pom</packaging>
     <name>appointment_registration</name>
