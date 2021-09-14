@@ -4,6 +4,8 @@ target/
 !**/src/main/**
 !**/src/test/**
 
+ProjectCodesSpringBoot尚医通
+
 ### STS ###
 .apt_generated
 .classpath
