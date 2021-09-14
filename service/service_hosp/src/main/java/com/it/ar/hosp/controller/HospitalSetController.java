@@ -120,5 +120,12 @@ public class HospitalSetController {
         return Result.ok();
     }
     //发送签名密钥
-
+    @PutMapping("/sendKey/{id}")
+    public Result lockHospitalSet(@PathVariable Long id){
+        HospitalSet hospitalSet = hospitalSetService.getById(id);
+        String signKey = hospitalSet.getSignKey();
+        String hoscode = hospitalSet.getHoscode();
+        // 发送短信
+        return Result.ok();
+    }
 }

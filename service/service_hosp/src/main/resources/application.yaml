@@ -16,6 +16,7 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8       #返回json的全局时间格式
 
+
 #  cloud:
 #    nacos:
 #      discovery:
@@ -41,4 +42,6 @@ spring:
 #feign:
 #  sentinel:
 #    enabled: true   #开启sentinel
-
+#logging:
+#  level:
+#    root: info
