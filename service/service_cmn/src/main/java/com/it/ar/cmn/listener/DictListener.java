@@ -1,0 +1,31 @@
+package com.it.ar.cmn.listener;
+
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.it.ar.cmn.mapper.DictMapper;
+import com.it.ar.model.cmn.Dict;
+import com.it.ar.vo.cmn.DictEeVo;
+import org.springframework.beans.BeanUtils;
+
+public class DictListener extends AnalysisEventListener<DictEeVo> {
+
+    private DictMapper dictMapper;
+
+    public DictListener(DictMapper dictMapper) {
+        this.dictMapper = dictMapper;
+    }
+
+    //一行一行的读取
+    @Override
+    public void invoke(DictEeVo dictEeVo, AnalysisContext analysisContext) {
+        //调用方法添加到数据库中
+        Dict dict = new Dict();
+        BeanUtils.copyProperties(dictEeVo,dict);
+        dictMapper.insert(dict);
+    }
+
+    @Override
+    public void doAfterAllAnalysed(AnalysisContext analysisContext) {
+
+    }
+}

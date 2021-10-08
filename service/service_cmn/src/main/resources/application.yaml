@@ -15,7 +15,18 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8       #返回json的全局时间格式
-
+  redis:
+    host: r-bp1juozxsj6kqp8dd5pd.redis.rds.aliyuncs.com
+    port: 6379
+    password: duhan:LANGhun0
+    database: 0
+    timeout: 1800000
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: -1
+        max-idle: 5        #最大阻塞时间
+        min-idle: 0
 
 #  cloud:
 #    nacos:
