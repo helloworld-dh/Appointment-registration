@@ -18,7 +18,7 @@ spring:
   redis:
     host: r-bp1juozxsj6kqp8dd5pd.redis.rds.aliyuncs.com
     port: 6379
-    password: duhan:LANGhun0
+    password: duhan:LANGhun123456
     database: 0
     timeout: 1800000
     lettuce:
