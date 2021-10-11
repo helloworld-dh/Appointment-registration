@@ -1,0 +1,42 @@
+server:
+  port: 9998
+# 配置控制台打印完整带参数SQL语句
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/*.xml
+spring:
+  thymeleaf:
+    mode: LEGACYHTML5   # 用非严格的html
+    encoding: UTF-8     # 编码
+    cache: false        #开发设置为false,避免修改模板还要重启服务器
+    prefix: classpath:/templates/
+  redis:
+    host: r-bp1juozxsj6kqp8dd5pd.redis.rds.aliyuncs.com
+    port: 6379
+    password: duhan:LANGhun123456
+    database: 0
+    timeout: 1800000
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: -1
+        max-idle: 5        #最大阻塞时间
+        min-idle: 0
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/hospital_manage?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: root
+    password: root
+    hikari:
+      connection-test-query: SELECT 1      # 数据库连接测试语句
+      connection-timeout: 60000
+      idle-timeout: 5000000   #一个连接idle状态的最大时长，超时则被释放(retired)
+      max-lifetime: 540000    #一个连接的生命时长，超时而且没被使用则被释放(retired)
+      maximum-pool-size: 12   #连接池中允许的最大连接数
+      minimum-idle: 10        #连接池中允许的最小连接数
+      pool-name: GuliHikariPool
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
