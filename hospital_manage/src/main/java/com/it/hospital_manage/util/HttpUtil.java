@@ -44,8 +44,8 @@ public final class HttpUtil {
         try {
             URL url = new URL(strUrl);
             HttpURLConnection httpcon = (HttpURLConnection) url.openConnection();
-            httpcon.setDoOutput(true);  //指定可以进行写操作
-            httpcon.setDoInput(true);
+            httpcon.setDoOutput(true);  // 打开输出流，向服务器提交数据
+            httpcon.setDoInput(true);   // 打开输入流，从服务器获取数据
             httpcon.setUseCaches(false);
             httpcon.setInstanceFollowRedirects(true);    //是否可以自动重定向
             httpcon.setConnectTimeout(CONN_TIMEOUT);
@@ -53,6 +53,7 @@ public final class HttpUtil {
             httpcon.setRequestMethod(reqmethod);
             httpcon.connect();
             if (reqmethod.equalsIgnoreCase(POST)) {      //字符串与指定的POST做比较
+                // 获取输出流，向服务器提交数据
                 OutputStream os = httpcon.getOutputStream();
                 os.write(reqData);
                 os.flush();
