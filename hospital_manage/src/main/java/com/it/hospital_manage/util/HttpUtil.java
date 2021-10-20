@@ -51,7 +51,7 @@ public final class HttpUtil {
             httpcon.setConnectTimeout(CONN_TIMEOUT);
             httpcon.setReadTimeout(READ_TIMEOUT);
             httpcon.setRequestMethod(reqmethod);
-            httpcon.connect();
+            httpcon.connect();                        // 建立连接，实际并无发送Http请求，相当于tcp三次连接
             if (reqmethod.equalsIgnoreCase(POST)) {      //字符串与指定的POST做比较
                 // 获取输出流，向服务器提交数据
                 OutputStream os = httpcon.getOutputStream();
@@ -59,6 +59,7 @@ public final class HttpUtil {
                 os.flush();
                 os.close();
             }
+             // httpcon.getInputStream()将http请求发送给服务器
             BufferedReader in = new BufferedReader(new InputStreamReader(httpcon.getInputStream(), "utf-8"));
             String inputLine;
             StringBuilder bankXmlBuffer = new StringBuilder();
