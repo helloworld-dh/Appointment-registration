@@ -5,10 +5,13 @@ import com.it.hospital_manage.model.HospitalSet;
 import com.it.hospital_manage.service.ApiService;
 import com.it.hospital_manage.util.HospitalException;
 import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,13 +19,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.websocket.server.PathParam;
+import java.security.PublicKey;
 
 @Api(tags = "医院管理接口")
 @Controller
 @RequestMapping
+@Slf4j
 public class ApiController extends BaseController{
 
     @Autowired
+    @Qualifier("apiServiceImpl")
     private ApiService apiService;
 
     @Autowired
@@ -35,8 +41,14 @@ public class ApiController extends BaseController{
         return "hospitalSet/index";
     }
 
+    @RequestMapping("/hospitalSet/save")
+    public String createHospitalSet(ModelMap model, HospitalSet hospitalSet){
+        hospitalSetMapper.updateById(hospitalSet);
+        return "redirect:/hospitalSet/index";
+    }
+
     @RequestMapping("/hospital/index")
-    public String createHospitalSet(ModelMap model,
+    public String getHospital(ModelMap model,
                                     HttpServletRequest request,
                                     RedirectAttributes redirectAttributes){
         try {
@@ -94,4 +106,105 @@ public class ApiController extends BaseController{
         return "department/index";
 
     }
+
+    @RequestMapping(value = "/department/create")
+    public String create(ModelMap model){
+        return "department/create";
+    }
+
+    @RequestMapping(value = "/department/save", method = RequestMethod.POST)
+    public String save(String data, HttpServletRequest request){
+        try {
+            apiService.saveDepartment(data);
+
+        }catch (HospitalException e){
+
+            return this.failurePage(e.getMessage(),request);
+        }catch (Exception e){
+            return this.failurePage("数据异常",request);
+        }
+        return this.successPage(null,request);
+    }
+
+    @RequestMapping("/schedule/list")
+    public String findSchedule(ModelMap model,
+                               @RequestParam(defaultValue = "1") int pageNum,
+                               @RequestParam(defaultValue = "10") int pageSize,
+                               HttpServletRequest request,
+                               RedirectAttributes redirectAttributes){
+
+        try {
+            HospitalSet hospitalSet = hospitalSetMapper.selectById(1);
+            if (hospitalSet == null || StringUtils.isEmpty(hospitalSet.getHoscode()) ||
+                    StringUtils.isEmpty(hospitalSet.getSignKey())){
+                this.failureMessage("先设置医院code与签名key", redirectAttributes);
+                return "redirect:/hospitalSet/index";
+            }
+            model.addAllAttributes(apiService.findSchedule(pageNum,pageSize));
+
+        }catch (HospitalException e){
+            this.failureMessage(e.getMessage(),request);
+        }catch (Exception e){
+            this.failureMessage("数据异常",request);
+        }
+        return "schedule/index";
+    }
+
+    @RequestMapping(value = "/schedule/create")
+    public String createSchedule(ModelMap model){
+        return "schedule/create";
+    }
+
+    @RequestMapping(value = "/schedule/save", method = RequestMethod.POST)
+    public String saveSchedule(String data, HttpServletRequest request){
+        try {
+            apiService.saveSchedule(data);
+        }catch (HospitalException e){
+            return this.failurePage(e.getMessage(),request);
+        }catch (Exception e){
+            e.printStackTrace();
+            return this.failurePage("数据异常:"+e.getMessage(),request);
+        }
+        return this.successPage(null,request);
+    }
+
+    @RequestMapping(value = "/hospital/createBatch")
+    public String createHospitalBatch(ModelMap model){
+        return "hospital/createBatch";
+    }
+
+    @RequestMapping(value = "/hospital/saveBatch", method = RequestMethod.POST)
+    public String saveBatchHospital(HttpServletRequest request){
+        try {
+            apiService.saveBatchHospital();
+        }catch (HospitalException e){
+            return this.failurePage(e.getMessage(),request);
+        }catch (Exception e){
+            return this.failurePage("数据异常",request);
+        }
+        return this.successPage(null,request);
+    }
+
+    @RequestMapping(value = "/department/remove/{depcode}",method = RequestMethod.POST)
+    public String removeDepartment(ModelMap model,
+                                   @PathVariable String depcode,
+                                   RedirectAttributes redirectAttributes){
+        apiService.removeDepartment(depcode);
+
+        this.successMessage(null,redirectAttributes);
+        return "redirect:/department/list";
+    }
+
+    @RequestMapping(value = "schedule/remove/{hosScheduleId}", method = RequestMethod.GET)
+    public String removeSchedule(ModelMap model,
+                                 @PathVariable String hosScheduleId,
+                                 RedirectAttributes redirectAttributes){
+        apiService.removeSchedule(hosScheduleId);
+
+        this.successMessage(null,redirectAttributes);
+        return "redirect:/schedule/list";
+    }
+
+
+
 }

@@ -1,10 +1,10 @@
-package com.it.hospital_manage.util;
+package com.it.ar.common.utils;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.URL;
-import java.net.HttpURLConnection;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 @Slf4j
 public final class HttpUtil {
@@ -59,7 +59,7 @@ public final class HttpUtil {
                 os.flush();
                 os.close();
             }
-            // 获得响应
+             // httpcon.getInputStream()将http请求发送给服务器
             BufferedReader in = new BufferedReader(new InputStreamReader(httpcon.getInputStream(), "utf-8"));
             String inputLine;
             StringBuilder bankXmlBuffer = new StringBuilder();
@@ -68,7 +68,6 @@ public final class HttpUtil {
             }
             in.close();
             httpcon.disconnect();
-            log.info(bankXmlBuffer.toString());
             return bankXmlBuffer.toString().getBytes();
         } catch (Exception ex) {
             log.error(ex.toString(), ex);

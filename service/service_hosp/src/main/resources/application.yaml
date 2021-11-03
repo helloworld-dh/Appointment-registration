@@ -24,11 +24,11 @@ spring:
 #    sentinel:
 #      transport:
 #        dashboard: http://127.0.0.1:8858
-#  data:
-#    mongodb:
-#      host: 192.168.44.163
-#      port: 27017
-#      database: hospotal      #mongodb地址
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: yygh_hosp      #mongodb地址
 
 #  rabbitmq:
 #    host: 127.0.0.1
