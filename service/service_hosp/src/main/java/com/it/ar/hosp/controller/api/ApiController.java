@@ -8,9 +8,11 @@ import com.it.ar.common.utils.MD5;
 import com.it.ar.hosp.service.DepartmentService;
 import com.it.ar.hosp.service.HospitalService;
 import com.it.ar.hosp.service.HospitalSetService;
+import com.it.ar.model.hosp.Department;
 import com.it.ar.model.hosp.Hospital;
 import com.it.ar.vo.hosp.DepartmentQueryVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -110,6 +112,7 @@ public class ApiController {
     }
 
     // 查询科室接口
+    @PostMapping("/department/list")
     public Result findDepartment(HttpServletRequest request){
         // 获取传递过来的科室信息
         Map<String, String[]> requestMap = request.getParameterMap();
@@ -135,6 +138,33 @@ public class ApiController {
         DepartmentQueryVo departmentQueryVo = new DepartmentQueryVo();
         departmentQueryVo.setHoscode(hoscode);
         // 调用service方法
+        Page<Department> pageModel = departmentService.findPageDepartment(page, limit, departmentQueryVo);
+        return Result.ok(pageModel);
+    }
+    // 删除科室接口
+    @PostMapping("/department/remove")
+    public Result removeDepartment(HttpServletRequest request){
+        // 获取传递过来的科室信息
+        Map<String, String[]> requestMap = request.getParameterMap();
+        Map<String, Object> paramMap = HttpRequestHelper.switchMap(requestMap);
+
+        // 医院编号
+        String hoscode = (String) paramMap.get("hoscode");
+        //科室编号
+        String depcode = (String) paramMap.get("depcode");
+
+        // 获取医院传递过来的签名,签名已经进行MD5加密
+        String hospSign = (String) paramMap.get("sign");
+        // 根据传递过来医院编码，查询数据库，查询签名
+        String signKey = hospitalSetService.getSignKey(hoscode);
+        // 把数据库查询签名进行MD5加密
+        String signKeyMd5 = MD5.encrypt(signKey);
+        // 判断签名是否一致
+        if (!hospSign.equals(signKeyMd5)){
+            throw new ArException(ResultCodeEnum.SIGN_ERROR);
+        }
+        departmentService.remove(hoscode,depcode);
+        return Result.ok();
 
     }
 

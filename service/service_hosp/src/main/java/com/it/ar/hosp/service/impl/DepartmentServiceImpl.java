@@ -5,8 +5,12 @@ import com.it.ar.hosp.repository.DepartmentRepository;
 import com.it.ar.hosp.service.DepartmentService;
 import com.it.ar.model.hosp.Department;
 import com.it.ar.vo.hosp.DepartmentQueryVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -43,7 +47,29 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public Page<Department> findPageDepartment(int page, int limit, DepartmentQueryVo departmentQueryVo) {
+        // 创建Pageable对象，设置当前页和每页记录数
+        // 0是第一页
+        PageRequest pageable = PageRequest.of(page - 1, limit);
+        // 创建Example对象
+        Department department = new Department();
+        BeanUtils.copyProperties(departmentQueryVo,department);
+        department.setIsDeleted(0);
+        ExampleMatcher matcher = ExampleMatcher.matching()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING)
+                .withIgnoreCase(true);
+        Example<Department> example = Example.of(department, matcher);
+        Page<Department> all =  departmentRepository.findAll(example,pageable);
+        return all;
+    }
 
-        return null;
+    // 删除科室接口
+    @Override
+    public void remove(String hoscode, String depcode) {
+        // 根据医院编号和科室编号查询
+        Department department = departmentRepository.getDepartmentByHoscodeAndDepcode(hoscode, depcode);
+        if (department!=null){
+            // 调用方法删除
+            departmentRepository.deleteById(department.getId());
+        }
     }
 }
