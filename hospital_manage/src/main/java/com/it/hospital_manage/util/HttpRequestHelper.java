@@ -10,7 +10,12 @@ import java.util.*;
 public class HttpRequestHelper {
 
     public static void main(String[] args) {
-
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("d", "4");
+        paramMap.put("b", "2");
+        paramMap.put("c", "3");
+        paramMap.put("a", "1");
+        log.info(getSign(paramMap, ""));
     }
 
     /**
